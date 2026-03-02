@@ -1,6 +1,6 @@
 {
   "name": "sidestate",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Vanilla TS/JS shared state management and routing",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
