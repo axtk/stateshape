@@ -62,7 +62,7 @@ A variety of `State` that syncs its data to the browser storage and restores it 
   });
 ```
 
-By default, `PersistentState` stores its data at the specified `key` in `localStorage` and transforms the data with `JSON.stringify()` and `JSON.parse()`. Switch to `sessionStorage` by setting `options.session` to `true` in `new PersistentState(value, options)`. Set custom `options.serialize()` and `options.deserialize()` to override the default data transforms.
+By default, `PersistentState` stores its data at the specified `key` in `localStorage` and transforms the data with `JSON.stringify()` and `JSON.parse()`. Switch to `sessionStorage` by setting `options.session` to `true` in `new PersistentState(value, options)`. Set custom `serialize()` and `deserialize()` in `options` to override the default data transforms used with the browser storage. Alternatively, use custom `{ read, write? }` as `options` to set up custom interaction with an external storage.
 
 Instances of `PersistentState` automatically sync their values with the browser storage when created and updated. At other times, call `.emit("sync")` on a `PersistentState` instance to sync its value from the browser storage when needed.
 
