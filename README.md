@@ -159,6 +159,8 @@ route.on("navigationstart", ({ href }) => {
 - [Type-safe URL-based rendering](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts), Route, url-shape, zod
 - [SPA redirection](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts), Route
 
+Find also the code of these examples in the repo's [`tests`](https://github.com/axtk/sidestate/tree/main/tests) directory.
+
 ## Integrations
 
 [`react-sidestate`](https://www.npmjs.com/package/react-sidestate)
