@@ -32,11 +32,7 @@ test.describe("typed routing", () => {
   let server: Server;
 
   test.beforeAll(async () => {
-    server = await serve({
-      path: import.meta.url,
-      bundle: true,
-      spa: true,
-    });
+    server = await serve({ path: import.meta.url });
   });
 
   test.afterAll(() => {
