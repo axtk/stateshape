@@ -5,8 +5,8 @@ let route = new Route();
 
 route.on("navigationstart", ({ href }) => {
   if (href === "/") {
-    route.assign("/sections/1"); // redirection
-    return false;
+    route.assign("/sections/1"); // SPA redirection
+    return false; // Quit the current navigation
   }
 });
 
@@ -15,6 +15,7 @@ route.on("navigationcomplete", () => {
   renderMainContent();
 });
 
+// Enable SPA navigation with HTML links
 route.observe(document);
 
 function renderHeader() {

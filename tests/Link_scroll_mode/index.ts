@@ -7,6 +7,7 @@ route.on("navigationcomplete", () => {
   render();
 });
 
+// Enable SPA navigation with HTML links
 route.observe(document);
 
 function render() {

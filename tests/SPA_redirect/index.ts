@@ -12,7 +12,7 @@ route.on("navigationstart", ({ href }) => {
     // Similarly to the `window.location` API, also equivalent to:
     // `route.assign("/sections/1");`
 
-    // Quit further event handling
+    // Quit the current navigation
     return false;
   }
 });
