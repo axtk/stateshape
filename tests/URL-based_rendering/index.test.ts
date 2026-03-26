@@ -10,10 +10,15 @@ class Playground {
     await this.page.getByRole("link", { name }).click();
   }
   async hasActiveLink(name: string) {
-    await expect(this.page.getByRole("link", { name })).toHaveAttribute("data-active", "true");
+    await expect(this.page.getByRole("link", { name })).toHaveAttribute(
+      "data-active",
+      "true",
+    );
   }
   async hasInactiveLink(name: string) {
-    await expect(this.page.getByRole("link", { name })).not.toHaveAttribute("data-active");
+    await expect(this.page.getByRole("link", { name })).not.toHaveAttribute(
+      "data-active",
+    );
   }
   async hasPath(value: string) {
     await expect(this.page).toHaveURL(

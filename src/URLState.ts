@@ -23,7 +23,9 @@ function isImmediatelyInvokedEvent(
 
 export type URLStateOptions = StateOptions;
 
-export class URLState<P extends URLStatePayloadMap = URLStatePayloadMap> extends State<string, P> {
+export class URLState<
+  P extends URLStatePayloadMap = URLStatePayloadMap,
+> extends State<string, P> {
   constructor(href: string | null = null, options?: URLStateOptions) {
     super(href ?? "", options);
   }

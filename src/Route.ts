@@ -5,7 +5,11 @@ import type { LocationValue } from "./types/LocationValue.ts";
 import type { MatchHandler } from "./types/MatchHandler.ts";
 import type { NavigationOptions } from "./types/NavigationOptions.ts";
 import type { URLData } from "./types/URLData.ts";
-import { URLState, URLStateOptions, URLStatePayloadMap } from "./URLState.ts";
+import {
+  URLState,
+  type URLStateOptions,
+  type URLStatePayloadMap,
+} from "./URLState.ts";
 import { compileURL } from "./utils/compileURL.ts";
 import { getNavigationOptions } from "./utils/getNavigationOptions.ts";
 import { isRouteEvent } from "./utils/isRouteEvent.ts";
@@ -22,7 +26,9 @@ export type ObservedElement =
   | NodeList;
 
 function isElementCollection(x: unknown): x is ElementCollection {
-  return Array.isArray(x) || x instanceof NodeList || x instanceof HTMLCollection;
+  return (
+    Array.isArray(x) || x instanceof NodeList || x instanceof HTMLCollection
+  );
 }
 
 function isLinkElement(x: unknown): x is LinkElement {
@@ -38,7 +44,7 @@ function toggleActive(element: Element | Node, route: Route) {
 }
 
 export type RoutePayloadMap = URLStatePayloadMap & {
-  documentclick: MouseEvent,
+  documentclick: MouseEvent;
 };
 
 export type RouteOptions = URLStateOptions;
@@ -134,8 +140,7 @@ export class Route extends URLState<RoutePayloadMap> {
           let targets = resolvedContainer.querySelectorAll(targetElement);
 
           for (let element of targets) toggleActive(element, this);
-        }
-        else if (resolvedContainer.contains(targetElement))
+        } else if (resolvedContainer.contains(targetElement))
           toggleActive(targetElement, this);
       }
     });
