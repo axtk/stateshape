@@ -1,12 +1,11 @@
 import { QuasiURL } from "quasiurl";
-import type { StateOptions } from "./State.ts";
 import type { LinkElement } from "./types/LinkElement.ts";
 import type { LocationPattern } from "./types/LocationPattern.ts";
 import type { LocationValue } from "./types/LocationValue.ts";
 import type { MatchHandler } from "./types/MatchHandler.ts";
 import type { NavigationOptions } from "./types/NavigationOptions.ts";
 import type { URLData } from "./types/URLData.ts";
-import { URLState } from "./URLState.ts";
+import { URLState, URLStateOptions, URLStatePayloadMap } from "./URLState.ts";
 import { compileURL } from "./utils/compileURL.ts";
 import { getNavigationOptions } from "./utils/getNavigationOptions.ts";
 import { isRouteEvent } from "./utils/isRouteEvent.ts";
@@ -22,15 +21,30 @@ export type ObservedElement =
   | HTMLCollection
   | NodeList;
 
-let isElementCollection = (x: unknown): x is ElementCollection =>
-  Array.isArray(x) || x instanceof NodeList || x instanceof HTMLCollection;
+function isElementCollection(x: unknown): x is ElementCollection {
+  return Array.isArray(x) || x instanceof NodeList || x instanceof HTMLCollection;
+}
 
-let isLinkElement = (x: unknown): x is LinkElement =>
-  x instanceof HTMLAnchorElement || x instanceof HTMLAreaElement;
+function isLinkElement(x: unknown): x is LinkElement {
+  return x instanceof HTMLAnchorElement || x instanceof HTMLAreaElement;
+}
 
-export class Route extends URLState {
-  _clicks = new Set<(event: MouseEvent) => void>();
-  constructor(href: LocationValue | null = null, options?: StateOptions) {
+function toggleActive(element: Element | Node, route: Route) {
+  if (!isLinkElement(element)) return;
+
+  if (route.match(route.toValue(element.href)).ok)
+    element.dataset.active = "true";
+  else delete element.dataset.active;
+}
+
+export type RoutePayloadMap = URLStatePayloadMap & {
+  documentclick: MouseEvent,
+};
+
+export type RouteOptions = URLStateOptions;
+
+export class Route extends URLState<RoutePayloadMap> {
+  constructor(href: LocationValue | null = null, options?: RouteOptions) {
     super(String(href ?? ""), options);
   }
   _init() {
@@ -39,7 +53,7 @@ export class Route extends URLState {
     if (typeof window === "undefined") return;
 
     let handleClick = (event: MouseEvent) => {
-      for (let callback of this._clicks) callback(event);
+      this.emit("documentclick", event);
     };
 
     this.on("start", () => {
@@ -63,19 +77,28 @@ export class Route extends URLState {
     container: ContainerElement | (() => ContainerElement),
     elements: ObservedElement = "a, area",
   ) {
-    let handleClick = (event: MouseEvent) => {
-      if (!this._active || event.defaultPrevented || !isRouteEvent(event))
-        return;
-
+    let resolveParams = () => {
       let resolvedContainer =
         typeof container === "function" ? container() : container;
 
       if (!resolvedContainer) return;
 
-      let element: HTMLAnchorElement | HTMLAreaElement | null = null;
       let targetElements = isElementCollection(elements)
         ? Array.from(elements)
         : [elements];
+
+      return { resolvedContainer, targetElements };
+    };
+
+    let removeClickHandlers = this.on("documentclick", (event: MouseEvent) => {
+      if (event.defaultPrevented || !isRouteEvent(event)) return;
+
+      let resolvedParams = resolveParams();
+
+      if (!resolvedParams) return;
+
+      let { resolvedContainer, targetElements } = resolvedParams;
+      let element: HTMLAnchorElement | HTMLAreaElement | null = null;
 
       for (let targetElement of targetElements) {
         let target: Node | null = null;
@@ -97,12 +120,29 @@ export class Route extends URLState {
         event.preventDefault();
         this.navigate(getNavigationOptions(element));
       }
-    };
+    });
 
-    this._clicks.add(handleClick);
+    let removeURLChangeHandlers = this.on("set", () => {
+      let resolvedParams = resolveParams();
+
+      if (!resolvedParams) return;
+
+      let { resolvedContainer, targetElements } = resolvedParams;
+
+      for (let targetElement of targetElements) {
+        if (typeof targetElement === "string") {
+          let targets = resolvedContainer.querySelectorAll(targetElement);
+
+          for (let element of targets) toggleActive(element, this);
+        }
+        else if (resolvedContainer.contains(targetElement))
+          toggleActive(targetElement, this);
+      }
+    });
 
     return () => {
-      this._clicks.delete(handleClick);
+      removeClickHandlers();
+      removeURLChangeHandlers();
     };
   }
   /**

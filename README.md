@@ -128,6 +128,8 @@ Tweak the links' navigation behavior by adding a relevant combination of the opt
 <a href="/intro" data-spa="off">Intro</a>
 ```
 
+Links covered by `route.observe(container, selector?)` also automatically receive the `data-active="true"` attribute whenever their `href` attribute matches the current URL, which can be used for additional styling.
+
 Define what should be done when the URL changes:
 
 ```js

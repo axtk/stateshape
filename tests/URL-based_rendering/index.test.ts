@@ -9,6 +9,12 @@ class Playground {
   async clickLink(name: string) {
     await this.page.getByRole("link", { name }).click();
   }
+  async hasActiveLink(name: string) {
+    await expect(this.page.getByRole("link", { name })).toHaveAttribute("data-active", "true");
+  }
+  async hasInactiveLink(name: string) {
+    await expect(this.page.getByRole("link", { name })).not.toHaveAttribute("data-active");
+  }
   async hasPath(value: string) {
     await expect(this.page).toHaveURL(
       ({ pathname, search }) => pathname + search === value,
@@ -46,20 +52,36 @@ test.describe("routing", () => {
     await p.hasMainTitle();
     await p.hasFullHeader();
 
+    await p.hasActiveLink("Intro");
+    await p.hasInactiveLink("Section 1");
+    await p.hasInactiveLink("Section 2");
+
     await p.clickLink("Section 1");
     await p.hasPath("/sections/1");
     await p.hasSectionTitle("Section 1");
     await p.hasCompactHeader();
+
+    await p.hasInactiveLink("Intro");
+    await p.hasActiveLink("Section 1");
+    await p.hasInactiveLink("Section 2");
 
     await p.clickLink("Section 2");
     await p.hasPath("/sections/2");
     await p.hasSectionTitle("Section 2");
     await p.hasCompactHeader();
 
+    await p.hasInactiveLink("Intro");
+    await p.hasInactiveLink("Section 1");
+    await p.hasActiveLink("Section 2");
+
     await p.clickLink("Intro");
     await p.hasPath("/");
     await p.hasSectionTitle("Intro");
     await p.hasFullHeader();
+
+    await p.hasActiveLink("Intro");
+    await p.hasInactiveLink("Section 1");
+    await p.hasInactiveLink("Section 2");
   });
 
   test("non-root url", async ({ page }) => {
