@@ -50,6 +50,15 @@ export class Route extends URLState {
       document.removeEventListener("click", handleClick);
     });
   }
+  /**
+   * Enables SPA navigation with HTML links inside the specified container.
+   *
+   * @example
+   * ```js
+   * let route = new Route();
+   * route.observe(document);
+   * ```
+   */
   observe(
     container: ContainerElement | (() => ContainerElement),
     elements: ObservedElement = "a, area",
@@ -96,6 +105,15 @@ export class Route extends URLState {
       this._clicks.delete(handleClick);
     };
   }
+  /**
+   * Navigates to the URL specified with `options.href`.
+   *
+   * @example
+   * ```js
+   * let route = new Route();
+   * route.navigate({ href: "/intro", history: "replace", scroll: "off" });
+   * ```
+   */
   navigate(options?: NavigationOptions<LocationValue>): void {
     if (!options?.href) return;
 
