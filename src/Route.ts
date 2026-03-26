@@ -128,7 +128,7 @@ export class Route extends URLState<RoutePayloadMap> {
       }
     });
 
-    let removeURLChangeHandlers = this.on("set", () => {
+    let removeURLChangeHandlers = this.on("ready", () => {
       let resolvedParams = resolveParams();
 
       if (!resolvedParams) return;

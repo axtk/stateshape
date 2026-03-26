@@ -13,12 +13,17 @@ export type URLStatePayloadMap = StatePayloadMap<string> & {
   // Similar to the "update" event, but with a `NavigationOptions` payload
   navigation: NavigationOptions;
   navigationcomplete: NavigationOptions;
+  ready: void;
 };
 
-function isImmediatelyInvokedEvent(
+function isImmediatelyInvokedNavigationEvent(
   event: unknown,
 ): event is "navigationstart" | "navigationcomplete" {
   return event === "navigationstart" || event === "navigationcomplete";
+}
+
+function isImmediatelyInvokedEvent(event: unknown): event is "ready" {
+  return event === "ready";
 }
 
 export type URLStateOptions = StateOptions;
@@ -40,6 +45,7 @@ export class URLState<
 
     this.on("start", () => {
       window.addEventListener("popstate", handleURLChange);
+      this.emit("ready");
     });
 
     this.on("stop", () => {
@@ -51,10 +57,16 @@ export class URLState<
     callback: EventCallback<P[E]>,
     invokeImmediately?: boolean,
   ) {
-    if (isImmediatelyInvokedEvent(event) && invokeImmediately !== false)
-      this._call(() => {
-        callback({ href: this.getValue() } as P[typeof event]);
-      });
+    if (invokeImmediately !== false) {
+      if (isImmediatelyInvokedNavigationEvent(event))
+        this._call(() => {
+          callback({ href: this.getValue() } as P[typeof event]);
+        });
+      else if (isImmediatelyInvokedEvent(event))
+        this._call(() => {
+          (callback as EventCallback<void>)();
+        });
+    }
 
     return super.on(event, callback);
   }
@@ -79,8 +91,10 @@ export class URLState<
       this._assignValue(href);
       this.emit("navigation", extendedOptions);
 
-      if (this.emit("navigationcomplete", extendedOptions))
+      if (this.emit("navigationcomplete", extendedOptions)) {
         this._complete(extendedOptions);
+        this.emit("ready");
+      }
     }
   }
   _transition(options?: NavigationOptions): boolean | void | undefined {
