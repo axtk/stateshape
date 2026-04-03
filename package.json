@@ -1,6 +1,6 @@
 {
   "name": "stateshape",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Vanilla TS/JS shared state management and routing",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
