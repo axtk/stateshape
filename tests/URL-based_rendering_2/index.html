@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>URL-based rendering 2 - vanilla TS/JS stateshape demo</title>
+    <link rel="stylesheet" href="/dist/index.css">
+  </head>
+  <body hidden>
+    <header>
+      <h1>App</h1>
+      <nav>
+        <a href="/">Intro</a> |
+        <a href="/sections/1">Section 1</a> |
+        <a href="/sections/2">Section 2</a>
+      </nav>
+    </header>
+    <main data-id="intro" hidden>
+      <h2>Intro</h2>
+    </main>
+    <main data-id="section" hidden>
+      <h2>Section <span>#</span></h2>
+    </main>
+    <script src="/dist/index.js" type="module"></script>
+  </body>
+</html>
