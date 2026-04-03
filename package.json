@@ -32,7 +32,7 @@
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.5.0",
     "auxsrv": "^0.3.11",
-    "url-shape": "^2.0.3",
+    "url-shape": "^2.1.4",
     "zod": "^4.3.6"
   },
   "dependencies": {
