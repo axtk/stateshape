@@ -1,5 +1,5 @@
 {
-  "name": "stateshape",
+  "name": "bridgestate",
   "version": "0.2.11",
   "description": "Vanilla TS/JS shared state management and routing",
   "main": "./dist/index.cjs",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axtk/stateshape.git"
+    "url": "git+https://github.com/axtk/bridgestate.git"
   },
   "keywords": [
     "state",
